@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Help Portal | Academic Excellence & Utility Hub</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f6ff',
+                            100: '#e0edff',
+                            200: '#bae0ff',
+                            300: '#7cc2ff',
+                            400: '#38a1ff',
+                            500: '#3b82f6', // Primary Accent
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af', // Deep Blue Accent
+                            900: '#1e3a8a',
+                            950: '#172554'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+        }
+        .dark .glass-panel {
+            background: rgba(15, 23, 42, 0.88);
+            backdrop-filter: blur(12px);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 4px;
+        }
+        .dark .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #3b82f6;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans min-h-screen flex flex-col antialiased transition-colors duration-300">
+
+    <!-- Toast Notification System -->
+    <div id="toast-container" class="fixed top-20 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
+
+    <!-- Modals Overlay -->
+    <div id="modal-backdrop" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <!-- Generic Interactive Modal Container -->
+        <div id="modal-card" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl max-w-2xl w-full p-6 sm:p-8 relative transform transition-all duration-300 scale-95 opacity-0">
+            <button onclick="closeModal()" class="absolute top-5 right-5 w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-300 flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <!-- Saved Bookmarks Drawer -->
+    <div id="bookmarks-drawer" class="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+        <div class="p-6 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-brand-100 dark:bg-brand-900/50 text-brand-600 dark:text-brand-400 flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-bookmark"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-slate-900 dark:text-white text-lg">Saved Items</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Your bookmarked study resources</p>
+                </div>
+            </div>
+            <button onclick="toggleBookmarksDrawer()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+        <div id="bookmarks-list" class="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
+            <!-- Dynamic saved bookmarks will go here -->
+        </div>
+    </div>
+
+    <!-- Header Navigation Bar -->
+    <header class="sticky top-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 sm:h-20 gap-4">
+                
+                <!-- Logo -->
+                <a href="#home" class="flex items-center gap-3 shrink-0 group">
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-brand-800 via-brand-600 to-brand-400 flex items-center justify-center text-white shadow-lg shadow-brand-500/25 group-hover:scale-105 transition-transform">
+                        <i class="fa-solid fa-graduation-cap text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="font-black text-xl tracking-tight text-slate-900 dark:text-white block leading-none">
+                            Edu<span class="text-brand-600 dark:text-brand-400">Portal</span>
+                        </span>
+                        <span class="text-[10px] font-semibold tracking-wider uppercase text-slate-400 dark:text-slate-500">Student Hub</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden lg:flex items-center gap-1 font-semibold text-xs tracking-wide uppercase">
+                    <a href="#home" class="nav-link px-3.5 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-brand-50/80 dark:hover:bg-slate-800 transition-all">Home</a>
+                    <a href="#study-materials" class="nav-link px-3.5 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-brand-50/80 dark:hover:bg-slate-800 transition-all">Study Materials</a>
+                    <a href="#timetable" class="nav-link px-3.5 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-brand-50/80 dark:hover:bg-slate-800 transition-all">Exam Schedule</a>
+                    <a href="#prep-tips" class="nav-link px-3.5 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-brand-50/80 dark:hover:bg-slate-800 transition-all">Prep & Tools</a>
+                    <a href="#announcements" class="nav-link px-3.5 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-brand-50/80 dark:hover:bg-slate-800 transition-all">Announcements</a>
+                    <a href="#contact" class="nav-link px-3.5 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-brand-50/80 dark:hover:bg-slate-800 transition-all">Support</a>
+                </nav>
+
+                <!-- Action Controls -->
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <!-- Real-time Global Search -->
+                    <div class="relative hidden sm:block">
+                        <input type="text" id="global-search-input" onkeyup="handleGlobalSearch(this.value)" placeholder="Search resources, exams..." 
+                            class="w-48 lg:w-64 text-xs bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-white rounded-xl pl-9 pr-8 py-2.5 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white dark:focus:bg-slate-900 transition-all">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-xs text-slate-400"></i>
+                        <button onclick="clearGlobalSearch()" id="search-clear-btn" class="hidden absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs">
+                            <i class="fa-solid fa-circle-xmark"></i>
+                        </button>
+                    </div>
+
+                    <!-- GPA Calculator Quick Launcher Button -->
+                    <button onclick="openGPACalculator()" class="p-2.5 rounded-xl bg-brand-50 dark:bg-slate-800 hover:bg-brand-100 text-brand-700 dark:text-brand-300 font-bold text-xs flex items-center gap-2 border border-brand-200 dark:border-slate-700 transition-all" title="Calculate GPA">
+                        <i class="fa-solid fa-calculator text-brand-600 dark:text-brand-400"></i>
+                        <span class="hidden md:inline">GPA Calc</span>
+                    </button>
+
+                    <!-- Bookmarks Drawer Button -->
+                    <button onclick="toggleBookmarksDrawer()" class="relative p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-all" title="Saved Items">
+                        <i class="fa-solid fa-bookmark"></i>
+                        <span id="bookmark-badge" class="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-brand-600 text-white text-[10px] font-black flex items-center justify-center border-2 border-white dark:border-slate-900 hidden">0</span>
+                    </button>
+
+                    <!-- Dark Mode Toggle -->
+                    <button onclick="toggleDarkMode()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-all" title="Toggle Dark/Light Mode">
+                        <i id="theme-toggle-icon" class="fa-solid fa-moon text-sm"></i>
+                    </button>
+
+                    <!-- Mobile Sidebar Toggle -->
+                    <button onclick="toggleMobileSidebar()" class="lg:hidden p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 focus:outline-none">
+                        <i id="mobile-menu-icon" class="fa-solid fa-bars text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Drawer Navigation -->
+        <div id="mobile-sidebar" class="hidden lg:hidden border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 pt-3 pb-6 space-y-2">
+            <div class="mb-3 sm:hidden">
+                <input type="text" onkeyup="handleGlobalSearch(this.value)" placeholder="Search resources, exams..." 
+                    class="w-full text-xs bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-white rounded-xl px-4 py-2.5 border border-slate-200 dark:border-slate-700">
+            </div>
+            <a href="#home" onclick="toggleMobileSidebar()" class="block px-4 py-3 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-brand-50 dark:hover:bg-slate-800 hover:text-brand-600"><i class="fa-solid fa-house w-6 text-brand-500"></i> Home</a>
+            <a href="#study-materials" onclick="toggleMobileSidebar()" class="block px-4 py-3 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-brand-50 dark:hover:bg-slate-800 hover:text-brand-600"><i class="fa-solid fa-book-open w-6 text-brand-500"></i> Study Materials</a>
+            <a href="#timetable" onclick="toggleMobileSidebar()" class="block px-4 py-3 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-brand-50 dark:hover:bg-slate-800 hover:text-brand-600"><i class="fa-solid fa-calendar-days w-6 text-brand-500"></i> Exam Schedule</a>
+            <a href="#prep-tips" onclick="toggleMobileSidebar()" class="block px-4 py-3 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-brand-50 dark:hover:bg-slate-800 hover:text-brand-600"><i class="fa-solid fa-stopwatch w-6 text-brand-500"></i> Prep & Tools</a>
+            <a href="#announcements" onclick="toggleMobileSidebar()" class="block px-4 py-3 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-brand-50 dark:hover:bg-slate-800 hover:text-brand-600"><i class="fa-solid fa-bullhorn w-6 text-brand-500"></i> Announcements</a>
+            <a href="#contact" onclick="toggleMobileSidebar()" class="block px-4 py-3 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-brand-50 dark:hover:bg-slate-800 hover:text-brand-600"><i class="fa-solid fa-headset w-6 text-brand-500"></i> Support & Tickets</a>
+        </div>
+    </header>
+
+    <!-- Main Content Stream -->
+    <main class="flex-grow">
+
+        <!-- Global Live Search Overlay Results Container -->
+        <div id="search-results-wrapper" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+            <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border-2 border-brand-500 shadow-2xl space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
+                    <h3 class="font-bold text-slate-900 dark:text-white text-base flex items-center gap-2">
+                        <i class="fa-solid fa-magnifying-glass text-brand-500"></i> Live Search Results
+                    </h3>
+                    <span id="search-count" class="text-xs bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300 font-bold px-2.5 py-1 rounded-full">0 matches</span>
+                </div>
+                <div id="search-results-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-96 overflow-y-auto custom-scrollbar">
+                    <!-- Results dynamically injected -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Hero Section -->
+        <section id="home" class="relative overflow-hidden bg-gradient-to-b from-brand-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 pt-10 pb-16 lg:pt-16 lg:pb-24">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    
+                    <div class="lg:col-span-7 text-center lg:text-left space-y-6">
+                        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-brand-100 dark:bg-brand-950 text-brand-800 dark:text-brand-300 border border-brand-200 dark:border-brand-800 shadow-sm">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                            Academic Term 2026 Active
+                        </div>
+                        
+                        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+                            Everything You Need To <span class="bg-gradient-to-r from-brand-700 via-brand-600 to-brand-400 dark:from-brand-300 dark:to-brand-500 bg-clip-text text-transparent">Ace College</span>
+                        </h1>
+                        
+                        <p class="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                            Your centralized digital student portal. Access verified lecture notes, exam schedules, study focus timers, GPA calculators, and official college updates all in one location.
+                        </p>
+
+                        <!-- Quick CTA Action Buttons -->
+                        <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-4 pt-2">
+                            <a href="#study-materials" class="px-6 py-3.5 rounded-2xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-xl shadow-brand-600/30 hover:shadow-brand-600/50 hover:-translate-y-0.5 transition-all flex items-center gap-2">
+                                <i class="fa-solid fa-folder-open"></i> Browse Notes
+                            </a>
+                            <a href="#timetable" class="px-6 py-3.5 rounded-2xl bg-white dark:bg-slate-800 text-slate-800 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700 font-bold text-sm border border-slate-200 dark:border-slate-700 shadow-sm hover:-translate-y-0.5 transition-all flex items-center gap-2">
+                                <i class="fa-regular fa-calendar-check text-brand-500"></i> Exam Schedule
+                            </a>
+                        </div>
+
+                        <!-- Live Metrics -->
+                        <div class="pt-6 border-t border-slate-200 dark:border-slate-800/80 grid grid-cols-3 gap-4 text-center lg:text-left">
+                            <div>
+                                <div class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">100%</div>
+                                <div class="text-xs font-semibold text-slate-500 dark:text-slate-400">Syllabus Covered</div>
+                            </div>
+                            <div>
+                                <div class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">24/7</div>
+                                <div class="text-xs font-semibold text-slate-500 dark:text-slate-400">Portal Availability</div>
+                            </div>
+                            <div>
+                                <div class="text-2xl sm:text-3xl font-black text-brand-600 dark:text-brand-400">0.00</div>
+                                <div class="text-xs font-semibold text-slate-500 dark:text-slate-400">Cost (Free Forever)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hero Visual Card Widget -->
+                    <div class="lg:col-span-5 flex justify-center">
+                        <div class="relative w-full max-w-md">
+                            <!-- Background Accent Glow -->
+                            <div class="absolute -top-6 -left-6 w-72 h-72 bg-brand-400/20 rounded-full filter blur-3xl opacity-70"></div>
+                            
+                            <!-- Card Body -->
+                            <div class="relative bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-7 shadow-2xl border border-slate-200/80 dark:border-slate-800 space-y-5">
+                                
+                                <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-12 h-12 rounded-2xl bg-brand-100 dark:bg-brand-950 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xl">
+                                            <i class="fa-solid fa-bell"></i>
+                                        </div>
+                                        <div>
+                                            <span class="text-[10px] font-extrabold uppercase text-slate-400 tracking-wider block">Upcoming Milestone</span>
+                                            <h4 class="text-sm font-bold text-slate-900 dark:text-white">Mid-Semester Finals</h4>
+                                        </div>
+                                    </div>
+                                    <span class="text-xs bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 font-bold px-2.5 py-1 rounded-full">In Progress</span>
+                                </div>
+
+                                <!-- Live Interactive Countdown Preview -->
+                                <div class="bg-gradient-to-br from-brand-800 to-brand-950 text-white rounded-2xl p-4 text-center shadow-lg">
+                                    <div class="text-xs font-semibold uppercase tracking-widest opacity-80 mb-2">Target Date: Nov 12, 2026</div>
+                                    <div class="grid grid-cols-3 gap-2">
+                                        <div class="bg-white/10 rounded-xl p-2 backdrop-blur-sm">
+                                            <div id="hero-cd-days" class="text-2xl font-black">21</div>
+                                            <div class="text-[10px] opacity-75 uppercase">Days</div>
+                                        </div>
+                                        <div class="bg-white/10 rounded-xl p-2 backdrop-blur-sm">
+                                            <div id="hero-cd-hours" class="text-2xl font-black">10</div>
+                                            <div class="text-[10px] opacity-75 uppercase">Hours</div>
+                                        </div>
+                                        <div class="bg-white/10 rounded-xl p-2 backdrop-blur-sm">
+                                            <div id="hero-cd-mins" class="text-2xl font-black">45</div>
+                                            <div class="text-[10px] opacity-75 uppercase">Minutes</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-2">
+                                    <div class="flex justify-between text-xs font-bold">
+                                        <span class="text-slate-600 dark:text-slate-400">Quick Utility: GPA Check</span>
+                                        <button onclick="openGPACalculator()" class="text-brand-600 dark:text-brand-400 hover:underline">Calculate Now &rarr;</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Links Deck Section -->
+        <section class="py-6 bg-white dark:bg-slate-900/60 border-y border-slate-200 dark:border-slate-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+                    <a href="#study-materials" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 hover:bg-brand-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-700/60 transition-all flex items-center gap-3.5 group">
+                        <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center text-lg group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-book"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">Study Notes</h4>
+                            <span class="text-[11px] text-slate-500 dark:text-slate-400">Download PDFs</span>
+                        </div>
+                    </a>
+
+                    <a href="#timetable" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 hover:bg-brand-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-700/60 transition-all flex items-center gap-3.5 group">
+                        <div class="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 flex items-center justify-center text-lg group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-calendar-check"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">Exam Schedule</h4>
+                            <span class="text-[11px] text-slate-500 dark:text-slate-400">Timetable & Venues</span>
+                        </div>
+                    </a>
+
+                    <a href="#prep-tips" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 hover:bg-brand-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-700/60 transition-all flex items-center gap-3.5 group">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-lg group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-stopwatch"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">Focus Timer</h4>
+                            <span class="text-[11px] text-slate-500 dark:text-slate-400">Pomodoro Tool</span>
+                        </div>
+                    </a>
+
+                    <a href="#announcements" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 hover:bg-brand-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-700/60 transition-all flex items-center gap-3.5 group">
+                        <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center text-lg group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-bullhorn"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">Announcements</h4>
+                            <span class="text-[11px] text-slate-500 dark:text-slate-400">Notices & News</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 1: STUDY MATERIALS -->
+        <section id="study-materials" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+                <div>
+                    <span class="text-brand-600 dark:text-brand-400 font-extrabold text-xs uppercase tracking-wider block mb-1">Academic Resources</span>
+                    <h2 class="text-3xl font-black text-slate-900 dark:text-white">Study Materials & Notes</h2>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm mt-1">Filter syllabus-aligned lecture slides, previous papers, and revision notes.</p>
+                </div>
+
+                <!-- Department / Tag Filter Pills -->
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="filterMaterials('all', this)" class="mat-filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-brand-600 text-white shadow-md transition-all">All</button>
+                    <button onclick="filterMaterials('cs', this)" class="mat-filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-brand-50 transition-all">Computer Science</button>
+                    <button onclick="filterMaterials('bus', this)" class="mat-filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-brand-50 transition-all">Business Admin</button>
+                    <button onclick="filterMaterials('mech', this)" class="mat-filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-brand-50 transition-all">Mechanical Engg</button>
+                    <button onclick="filterMaterials('gen', this)" class="mat-filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-brand-50 transition-all">General Electives</button>
+                </div>
+            </div>
+
+            <!-- Material Cards Container -->
+            <div id="materials-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamically rendered -->
+            </div>
+        </section>
+
+        <!-- SECTION 2: EXAM TIMETABLE & CALENDAR -->
+        <section id="timetable" class="py-16 bg-slate-100/80 dark:bg-slate-900/40 border-y border-slate-200 dark:border-slate-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div class="flex flex-col lg:flex-row lg:items-end justify-between mb-8 gap-4">
+                    <div>
+                        <span class="text-brand-600 dark:text-brand-400 font-extrabold text-xs uppercase tracking-wider block mb-1">Official Dates</span>
+                        <h2 class="text-3xl font-black text-slate-900 dark:text-white">Exam Timetable & Seating</h2>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm mt-1">Check scheduled mid-term exam dates, hall allocations, and timing.</p>
+                    </div>
+
+                    <!-- Department Selector & Export Actions -->
+                    <div class="flex flex-wrap items-center gap-3">
+                        <select id="timetable-dept-filter" onchange="renderTimetableTable()" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-xs font-semibold rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-2.5 focus:ring-2 focus:ring-brand-500 shadow-sm">
+                            <option value="all">All Departments</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Business Admin">Business Admin</option>
+                            <option value="Mechanical Engg">Mechanical Engg</option>
+                        </select>
+
+                        <button onclick="exportFullCalendarICS()" class="px-4 py-2.5 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-brand-50 text-slate-800 dark:text-slate-200 font-bold text-xs flex items-center gap-2 border border-slate-300 dark:border-slate-700 transition-all">
+                            <i class="fa-solid fa-calendar-plus text-brand-500"></i> Export Calendar (.ics)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Timetable Data Table -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-slate-200/80 dark:border-slate-700/80 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm text-slate-600 dark:text-slate-300">
+                            <thead class="bg-slate-50 dark:bg-slate-900/80 text-[11px] font-black uppercase text-slate-400 border-b border-slate-200 dark:border-slate-700">
+                                <tr>
+                                    <th class="px-6 py-4">Course & ID</th>
+                                    <th class="px-6 py-4">Department</th>
+                                    <th class="px-6 py-4">Date & Time Slot</th>
+                                    <th class="px-6 py-4">Exam Hall</th>
+                                    <th class="px-6 py-4 text-center">Interactive Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="timetable-rows" class="divide-y divide-slate-100 dark:divide-slate-700/60">
+                                <!-- Dynamic schedule rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 3: EXAM PREPARATION TIPS & TOOLS -->
+        <section id="prep-tips" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-brand-600 dark:text-brand-400 font-extrabold text-xs uppercase tracking-wider block mb-1">Study Productivity</span>
+                <h2 class="text-3xl font-black text-slate-900 dark:text-white">Exam Preparation Tools</h2>
+                <p class="text-slate-600 dark:text-slate-400 text-sm mt-2">Utilize embedded study timers, study strategies, and interactive pre-exam readiness checklists.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- Left Column: Interactive Pomodoro Widget -->
+                <div class="lg:col-span-5 bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-200/80 dark:border-slate-700 text-center">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300 text-xs font-bold mb-4">
+                        <i class="fa-solid fa-stopwatch"></i> Focus Study Session
+                    </div>
+                    
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white">Pomodoro Timer</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">25-minute focus session followed by a 5-minute break.</p>
+
+                    <!-- Timer Visual Circle -->
+                    <div class="my-8 relative inline-flex items-center justify-center">
+                        <div class="w-52 h-52 rounded-full border-8 border-brand-100 dark:border-slate-700 flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900">
+                            <span id="pomo-display" class="text-5xl font-black text-slate-800 dark:text-white tracking-tighter">25:00</span>
+                            <span id="pomo-status" class="text-xs font-extrabold text-brand-600 dark:text-brand-400 mt-2 uppercase tracking-widest">Focus Mode</span>
+                        </div>
+                    </div>
+
+                    <!-- Timer Controls -->
+                    <div class="flex items-center justify-center gap-3">
+                        <button id="pomo-toggle-btn" onclick="togglePomodoroTimer()" class="px-6 py-3 rounded-2xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs shadow-lg shadow-brand-600/30 transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-play"></i> Start Timer
+                        </button>
+                        <button onclick="resetPomodoroTimer()" class="px-4 py-3 rounded-2xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-slate-700 dark:text-slate-200 font-bold text-xs transition-all">
+                            <i class="fa-solid fa-rotate-left"></i> Reset
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Column: Interactive Checklist & Strategy Accordion -->
+                <div class="lg:col-span-7 space-y-6">
+                    
+                    <!-- Pre-Exam Readiness Checklist Card -->
+                    <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-xl border border-slate-200/80 dark:border-slate-700">
+                        <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-700 mb-4">
+                            <div>
+                                <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                    <i class="fa-solid fa-list-check text-brand-500"></i> Exam Day Checklist
+                                </h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">Saved automatically in your browser</p>
+                            </div>
+                            <span id="checklist-progress" class="text-xs font-extrabold bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300 px-2.5 py-1 rounded-full">0/4 Done</span>
+                        </div>
+
+                        <div id="checklist-items" class="space-y-2.5">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Study Strategies Accordion -->
+                    <div class="space-y-3">
+                        <h4 class="font-bold text-sm text-slate-900 dark:text-white px-1">Study Techniques</h4>
+                        
+                        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+                            <button onclick="toggleAccordion('strat-1')" class="w-full text-left p-4 font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-200 flex justify-between items-center hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                                <span><i class="fa-solid fa-brain text-brand-500 mr-2"></i> Active Recall Technique</span>
+                                <i id="strat-1-icon" class="fa-solid fa-chevron-down text-xs text-slate-400 transition-transform"></i>
+                            </button>
+                            <div id="strat-1" class="hidden p-4 pt-0 text-xs text-slate-600 dark:text-slate-300 leading-relaxed border-t border-slate-100 dark:border-slate-700">
+                                Test yourself after reading each chapter instead of simply re-reading the text. Write down key points from memory or complete practice questions without looking at the answer key.
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+                            <button onclick="toggleAccordion('strat-2')" class="w-full text-left p-4 font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-200 flex justify-between items-center hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                                <span><i class="fa-solid fa-layer-group text-brand-500 mr-2"></i> Spaced Repetition</span>
+                                <i id="strat-2-icon" class="fa-solid fa-chevron-down text-xs text-slate-400 transition-transform"></i>
+                            </button>
+                            <div id="strat-2" class="hidden p-4 pt-0 text-xs text-slate-600 dark:text-slate-300 leading-relaxed border-t border-slate-100 dark:border-slate-700">
+                                Review new information at increasing intervals: 24 hours after learning, then 3 days, 1 week, and 2 weeks later. This prevents last-minute cramming and improves memory retention.
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 4: COLLEGE ANNOUNCEMENTS -->
+        <section id="announcements" class="py-16 bg-slate-100/80 dark:bg-slate-900/40 border-y border-slate-200 dark:border-slate-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+                    <div>
+                        <span class="text-brand-600 dark:text-brand-400 font-extrabold text-xs uppercase tracking-wider block mb-1">Campus Updates</span>
+                        <h2 class="text-3xl font-black text-slate-900 dark:text-white">College Announcements</h2>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm mt-1">Official circulars, academic notices, and scholarship announcements.</p>
+                    </div>
+
+                    <!-- Category Filter Buttons -->
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="filterAnnouncements('all', this)" class="ann-filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-brand-600 text-white shadow-md transition-all">All</button>
+                        <button onclick="filterAnnouncements('Urgent', this)" class="ann-filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-brand-50 transition-all">Urgent</button>
+                        <button onclick="filterAnnouncements('Academic', this)" class="ann-filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-brand-50 transition-all">Academic</button>
+                        <button onclick="filterAnnouncements('Scholarship', this)" class="ann-filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-brand-50 transition-all">Scholarship</button>
+                    </div>
+                </div>
+
+                <!-- Announcements Feed Grid -->
+                <div id="announcements-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Dynamically rendered -->
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 5: CONTACT & SUPPORT + TICKET TRACKER -->
+        <section id="contact" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+                
+                <!-- Left: Support Info & Ticket History Tracker -->
+                <div class="lg:col-span-5 space-y-6">
+                    <div>
+                        <span class="text-brand-600 dark:text-brand-400 font-extrabold text-xs uppercase tracking-wider block mb-1">Student Assistance</span>
+                        <h2 class="text-3xl font-black text-slate-900 dark:text-white">Help Desk & Support</h2>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm mt-2">Submit an inquiry or request missing notes directly to the administration.</p>
+                    </div>
+
+                    <div class="p-5 bg-white dark:bg-slate-800 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-brand-100 dark:bg-brand-950 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xl shrink-0">
+                            <i class="fa-solid fa-headset"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs text-slate-400 font-semibold">Helpdesk Contact</div>
+                            <div class="text-sm font-bold text-slate-800 dark:text-slate-200">support@studentportal.edu</div>
+                            <div class="text-xs text-slate-500">Mon - Fri: 8:00 AM - 5:00 PM</div>
+                        </div>
+                    </div>
+
+                    <!-- Past Tickets Tracker Box -->
+                    <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-700 shadow-xl space-y-4">
+                        <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-700">
+                            <h3 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                                <i class="fa-solid fa-ticket text-brand-500"></i> My Submitted Tickets
+                            </h3>
+                            <span id="ticket-count" class="text-[10px] font-black bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded-full">0 Tickets</span>
+                        </div>
+                        <div id="tickets-history-list" class="space-y-3 max-h-60 overflow-y-auto custom-scrollbar">
+                            <!-- Dynamic Ticket Items -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Interactive Contact Form -->
+                <div class="lg:col-span-7 bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-200/80 dark:border-slate-700">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+                        <i class="fa-solid fa-paper-plane text-brand-500"></i> Submit Support Inquiry
+                    </h3>
+
+                    <form id="contact-form" onsubmit="handleSupportSubmit(event)" class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="support-name" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Full Name *</label>
+                                <input type="text" id="support-name" required placeholder="e.g., Alex Johnson" 
+                                    class="w-full bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white text-xs rounded-xl px-4 py-3 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-brand-500 outline-none transition-all">
+                            </div>
+                            <div>
+                                <label for="support-email" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Student Email *</label>
+                                <input type="email" id="support-email" required placeholder="alex@college.edu" 
+                                    class="w-full bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white text-xs rounded-xl px-4 py-3 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-brand-500 outline-none transition-all">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="support-dept" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Department *</label>
+                                <select id="support-dept" required class="w-full bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white text-xs rounded-xl px-4 py-3 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-brand-500 outline-none transition-all">
+                                    <option value="">Select Department</option>
+                                    <option value="Computer Science">Computer Science</option>
+                                    <option value="Business Admin">Business Administration</option>
+                                    <option value="Mechanical Engg">Mechanical Engineering</option>
+                                    <option value="General">General / Undeclared</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="support-topic" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Topic / Category *</label>
+                                <select id="support-topic" required class="w-full bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white text-xs rounded-xl px-4 py-3 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-brand-500 outline-none transition-all">
+                                    <option value="">Select Topic</option>
+                                    <option value="Notes Request">Missing Notes Request</option>
+                                    <option value="Exam Schedule Issue">Exam Schedule Clarification</option>
+                                    <option value="Technical Issue">Portal Technical Issue</option>
+                                    <option value="General Inquiry">General Inquiry</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="support-msg" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Detailed Message *</label>
+                            <textarea id="support-msg" rows="4" required placeholder="Describe your question or issue in detail..." 
+                                class="w-full bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white text-xs rounded-xl px-4 py-3 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-brand-500 outline-none transition-all"></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full py-3.5 rounded-2xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs shadow-lg shadow-brand-600/30 transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i> Submit Ticket
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs border-t border-slate-800 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div class="space-y-3">
+                    <div class="flex items-center gap-2 text-white font-bold text-base">
+                        <i class="fa-solid fa-graduation-cap text-brand-500"></i> Student Help Portal
+                    </div>
+                    <p class="leading-relaxed">A centralized, free digital platform built to assist college students with syllabus notes, exam preparation, and support.</p>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-3 uppercase tracking-wider text-[11px]">Quick Sections</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#study-materials" class="hover:text-white transition-colors">Study Materials</a></li>
+                        <li><a href="#timetable" class="hover:text-white transition-colors">Exam Timetable</a></li>
+                        <li><a href="#prep-tips" class="hover:text-white transition-colors">Pomodoro Focus Timer</a></li>
+                        <li><a href="#announcements" class="hover:text-white transition-colors">Campus Notices</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-3 uppercase tracking-wider text-[11px]">Utilities</h4>
+                    <ul class="space-y-2">
+                        <li><button onclick="openGPACalculator()" class="hover:text-white transition-colors">GPA Calculator</button></li>
+                        <li><button onclick="toggleBookmarksDrawer()" class="hover:text-white transition-colors">Saved Bookmarks</button></li>
+                        <li><a href="#contact" class="hover:text-white transition-colors">Support Ticket Desk</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-3 uppercase tracking-wider text-[11px]">Academic Year</h4>
+                    <p class="leading-relaxed">Fall Semester 2026<br>University Academic Affairs Board</p>
+                </div>
+            </div>
+            <div class="pt-6 border-t border-slate-800 text-center flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div>&copy; 2026 Student Help Portal. Designed for College Academic Excellence.</div>
+                <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="text-slate-300 hover:text-white flex items-center gap-1 font-bold">
+                    <i class="fa-solid fa-arrow-up"></i> Top
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive JavaScript Engine -->
+    <script>
+        // DATA STORES
+        const studyMaterialsData = [
+            { id: 'mat-1', title: 'Data Structures & Algorithms Complete Notes', dept: 'cs', type: 'PDF', size: '4.8 MB', code: 'CS301', desc: 'Comprehensive unit notes covering Trees, Graph Traversals, Sorting algorithms, and Dynamic Programming with C++ samples.' },
+            { id: 'mat-2', title: 'Database Management Systems Solved Question Bank', dept: 'cs', type: 'Notes', size: '2.1 MB', code: 'CS304', desc: 'Previous 5 years mid-term and final question papers with detailed answer guides and ER diagram walkthroughs.' },
+            { id: 'mat-3', title: 'Financial Accounting & Costing Formula Handbook', dept: 'bus', type: 'PDF', size: '1.9 MB', code: 'BA201', desc: 'Quick reference sheet for balance sheet ratios, cash flow statements, and break-even point formulations.' },
+            { id: 'mat-4', title: 'Thermodynamics & Heat Transfer Revision Guide', dept: 'mech', type: 'Past Papers', size: '5.4 MB', code: 'ME102', desc: 'Summarized cycle diagrams, enthalpy calculations, and past exam numerical problem solutions.' },
+            { id: 'mat-5', title: 'Operating Systems System Call Handout', dept: 'cs', type: 'PDF', size: '3.0 MB', code: 'CS308', desc: 'Detailed notes on process synchronization, mutex locks, semaphores, and memory paging strategies.' },
+            { id: 'mat-6', title: 'Business Communication & Ethics Lecture Slides', dept: 'gen', type: 'Video Lecture', size: '14.2 MB', code: 'GE101', desc: 'Presentation slides and video lecture notes covering workplace ethics, report writing, and seminar presentations.' }
+        ];
+
+        const timetableData = [
+            { id: 'tt-1', code: 'CS301', title: 'Data Structures & Algorithms', dept: 'Computer Science', date: 'Nov 12, 2026', time: '09:30 AM - 12:30 PM', hall: 'Hall A-102 (Building 2)', seatRange: 'Desk 01 - 40' },
+            { id: 'tt-2', code: 'CS304', title: 'Database Management Systems', dept: 'Computer Science', date: 'Nov 15, 2026', time: '02:00 PM - 05:00 PM', hall: 'Hall B-204 (Building 1)', seatRange: 'Desk 12 - 55' },
+            { id: 'tt-3', code: 'BA201', title: 'Financial Accounting & Costing', dept: 'Business Admin', date: 'Nov 18, 2026', time: '09:30 AM - 12:30 PM', hall: 'Auditorium C', seatRange: 'Desk 01 - 80' },
+            { id: 'tt-4', code: 'ME102', title: 'Thermodynamics & Heat Transfer', dept: 'Mechanical Engg', date: 'Nov 20, 2026', time: '02:00 PM - 05:00 PM', hall: 'Engg Lab Block 3', seatRange: 'Desk 05 - 35' },
+            { id: 'tt-5', code: 'CS308', title: 'Operating Systems', dept: 'Computer Science', date: 'Nov 23, 2026', time: '09:30 AM - 12:30 PM', hall: 'Hall A-104 (Building 2)', seatRange: 'Desk 01 - 45' }
+        ];
+
+        const announcementsData = [
+            { id: 'ann-1', title: 'Mid-Term Exam Re-evaluation Notice', category: 'Urgent', date: 'Oct 22, 2026', desc: 'Students requesting paper re-evaluation must submit their application forms by Nov 5 at the Academic Registrar office.' },
+            { id: 'ann-2', title: 'Merit Academic Scholarship Application Open', category: 'Scholarship', date: 'Oct 18, 2026', desc: 'Eligible students with GPA above 3.75 can submit scholarship forms online before the November deadline.' },
+            { id: 'ann-3', title: 'Library Extended 24/7 Hours During Finals', category: 'Academic', date: 'Oct 15, 2026', desc: 'The Central University Library will remain open 24 hours daily starting Nov 1 through the end of final exams.' }
+        ];
+
+        let defaultChecklist = [
+            { id: 'chk-1', text: 'Printed Exam Hall Ticket / Student ID Card', done: false },
+            { id: 'chk-2', text: 'Approved Scientific Calculator & Spare Batteries', done: false },
+            { id: 'chk-3', text: 'Clear Water Bottle & Blue/Black Pens', done: true },
+            { id: 'chk-4', text: 'Reviewed Formula Cheat Sheets & Notes', done: false }
+        ];
+
+        // STATE PERSISTENCE (LocalStorage)
+        let savedBookmarks = JSON.parse(localStorage.getItem('edu_portal_bookmarks')) || [];
+        let submittedTickets = JSON.parse(localStorage.getItem('edu_portal_tickets')) || [];
+        let checklistState = JSON.parse(localStorage.getItem('edu_portal_checklist')) || defaultChecklist;
+
+        // INITIALIZATION
+        document.addEventListener('DOMContentLoaded', () => {
+            renderMaterialsGrid(studyMaterialsData);
+            renderTimetableTable();
+            renderAnnouncementsGrid(announcementsData);
+            renderChecklist();
+            renderTicketsHistory();
+            updateBookmarkBadge();
+            setupActiveNavHighlight();
+        });
+
+        // DARK MODE TOGGLE
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-toggle-icon');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                icon.className = 'fa-solid fa-moon text-sm';
+            } else {
+                html.classList.add('dark');
+                icon.className = 'fa-solid fa-sun text-sm text-amber-400';
+            }
+        }
+
+        // MOBILE SIDEBAR
+        function toggleMobileSidebar() {
+            const sidebar = document.getElementById('mobile-sidebar');
+            const icon = document.getElementById('mobile-menu-icon');
+            if (sidebar.classList.contains('hidden')) {
+                sidebar.classList.remove('hidden');
+                icon.className = 'fa-solid fa-xmark text-lg';
+            } else {
+                sidebar.classList.add('hidden');
+                icon.className = 'fa-solid fa-bars text-lg';
+            }
+        }
+
+        // NAVIGATION ACTIVE HIGHLIGHT ON SCROLL
+        function setupActiveNavHighlight() {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(sec => {
+                    const top = sec.offsetTop - 120;
+                    if (window.scrollY >= top) {
+                        current = sec.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('text-brand-600', 'dark:text-brand-400', 'bg-brand-50/80', 'dark:bg-slate-800');
+                    if (link.getAttribute('href') === `#${current}`) {
+                        link.classList.add('text-brand-600', 'dark:text-brand-400', 'bg-brand-50/80', 'dark:bg-slate-800');
+                    }
+                });
+            });
+        }
+
+        // GLOBAL LIVE SEARCH ENGINE
+        function handleGlobalSearch(query) {
+            const wrapper = document.getElementById('search-results-wrapper');
+            const container = document.getElementById('search-results-list');
+            const countBadge = document.getElementById('search-count');
+            const clearBtn = document.getElementById('search-clear-btn');
+
+            const q = query.toLowerCase().trim();
+            if (!q) {
+                wrapper.classList.add('hidden');
+                if (clearBtn) clearBtn.classList.add('hidden');
+                return;
+            }
+
+            if (clearBtn) clearBtn.classList.remove('hidden');
+
+            // Search across materials, timetable, announcements
+            const matMatches = studyMaterialsData.filter(m => m.title.toLowerCase().includes(q) || m.code.toLowerCase().includes(q) || m.desc.toLowerCase().includes(q));
+            const ttMatches = timetableData.filter(t => t.title.toLowerCase().includes(q) || t.code.toLowerCase().includes(q) || t.hall.toLowerCase().includes(q));
+            const annMatches = announcementsData.filter(a => a.title.toLowerCase().includes(q) || a.desc.toLowerCase().includes(q));
+
+            const totalCount = matMatches.length + ttMatches.length + annMatches.length;
+            countBadge.innerText = `${totalCount} matches`;
+            wrapper.classList.remove('hidden');
+
+            if (totalCount === 0) {
+                container.innerHTML = `<div class="col-span-full py-6 text-center text-xs text-slate-400">No matching resources found for "${query}".</div>`;
+                return;
+            }
+
+            let resultsHTML = '';
+
+            matMatches.forEach(m => {
+                resultsHTML += `
+                    <div class="p-3.5 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs">
+                        <span class="text-[10px] font-bold text-brand-600 uppercase">Material • ${m.type}</span>
+                        <h4 class="font-bold text-slate-900 dark:text-white mt-1">${m.title}</h4>
+                        <button onclick="openMaterialPreview('${m.id}')" class="mt-2 text-brand-600 dark:text-brand-400 font-bold hover:underline">View & Download &rarr;</button>
+                    </div>
+                `;
+            });
+
+            ttMatches.forEach(t => {
+                resultsHTML += `
+                    <div class="p-3.5 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs">
+                        <span class="text-[10px] font-bold text-purple-600 uppercase">Exam • ${t.code}</span>
+                        <h4 class="font-bold text-slate-900 dark:text-white mt-1">${t.title}</h4>
+                        <div class="text-[11px] text-slate-500 mt-1">${t.date} | ${t.hall}</div>
+                    </div>
+                `;
+            });
+
+            annMatches.forEach(a => {
+                resultsHTML += `
+                    <div class="p-3.5 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs">
+                        <span class="text-[10px] font-bold text-amber-600 uppercase">Notice • ${a.category}</span>
+                        <h4 class="font-bold text-slate-900 dark:text-white mt-1">${a.title}</h4>
+                        <p class="text-[11px] text-slate-500 mt-1 line-clamp-2">${a.desc}</p>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = resultsHTML;
+        }
+
+        function clearGlobalSearch() {
+            const input = document.getElementById('global-search-input');
+            if (input) input.value = '';
+            handleGlobalSearch('');
+        }
+
+        // STUDY MATERIALS SECTION LOGIC
+        function renderMaterialsGrid(materials) {
+            const container = document.getElementById('materials-container');
+            container.innerHTML = materials.map(m => {
+                const isBookmarked = savedBookmarks.some(b => b.id === m.id);
+                return `
+                    <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-700/80 shadow-md hover:shadow-xl transition-all flex flex-col justify-between group">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-[10px] font-extrabold px-3 py-1 rounded-full bg-brand-50 dark:bg-brand-950 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-brand-800 uppercase tracking-wider">${m.type} • ${m.size}</span>
+                                <button onclick="toggleBookmark('${m.id}')" class="text-slate-400 hover:text-brand-600 transition-colors p-1" title="Bookmark Resource">
+                                    <i class="fa-${isBookmarked ? 'solid text-brand-600' : 'regular'} fa-bookmark text-base"></i>
+                                </button>
+                            </div>
+                            <span class="text-xs font-bold text-brand-600 dark:text-brand-400">${m.code}</span>
+                            <h3 class="font-bold text-slate-900 dark:text-white text-base mt-1 group-hover:text-brand-600 transition-colors line-clamp-2">${m.title}</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed line-clamp-3">${m.desc}</p>
+                        </div>
+
+                        <div class="pt-5 mt-5 border-t border-slate-100 dark:border-slate-700/60 flex items-center gap-2">
+                            <button onclick="openMaterialPreview('${m.id}')" class="flex-1 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-slate-800 dark:text-slate-200 font-bold text-xs transition-colors flex items-center justify-center gap-1.5">
+                                <i class="fa-regular fa-eye"></i> Preview
+                            </button>
+                            <button onclick="downloadResourceSimulated('${m.title}')" class="flex-1 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs shadow-md shadow-brand-600/20 transition-colors flex items-center justify-center gap-1.5">
+                                <i class="fa-solid fa-download"></i> Download
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterMaterials(deptKey, btn) {
+            document.querySelectorAll('.mat-filter-btn').forEach(b => {
+                b.className = 'mat-filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-brand-50 transition-all';
+            });
+            btn.className = 'mat-filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-brand-600 text-white shadow-md transition-all';
+
+            const filtered = deptKey === 'all' ? studyMaterialsData : studyMaterialsData.filter(m => m.dept === deptKey);
+            renderMaterialsGrid(filtered);
+        }
+
+        function openMaterialPreview(matId) {
+            const mat = studyMaterialsData.find(m => m.id === matId);
+            if (!mat) return;
+
+            openModal(`
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-brand-100 dark:bg-brand-950 text-brand-600 flex items-center justify-center font-bold text-lg">
+                            <i class="fa-solid fa-file-pdf"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-bold text-brand-600 uppercase">${mat.code} • ${mat.type}</span>
+                            <h3 class="text-base font-bold text-slate-900 dark:text-white">${mat.title}</h3>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-slate-50 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                        <h4 class="font-bold text-slate-800 dark:text-slate-100 mb-1">Document Summary & Topics Covered:</h4>
+                        <p>${mat.desc}</p>
+                        <ul class="list-disc list-inside mt-3 space-y-1 text-slate-500">
+                            <li>Verified by Academic Faculty</li>
+                            <li>Includes Solved Practice Problems</li>
+                            <li>Formatted for Fast Revision & Mobile Viewing</li>
+                        </ul>
+                    </div>
+
+                    <div class="flex justify-end gap-3 pt-2">
+                        <button onclick="closeModal()" class="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs">Close Preview</button>
+                        <button onclick="downloadResourceSimulated('${mat.title}'); closeModal();" class="px-5 py-2.5 rounded-xl bg-brand-600 text-white font-bold text-xs shadow-md">Download Full File (${mat.size})</button>
+                    </div>
+                </div>
+            `);
+        }
+
+        // BOOKMARKS SYSTEM
+        function toggleBookmark(id) {
+            const idx = savedBookmarks.findIndex(b => b.id === id);
+            if (idx > -1) {
+                savedBookmarks.splice(idx, 1);
+                showToast('Removed from saved bookmarks', 'info');
+            } else {
+                const item = studyMaterialsData.find(m => m.id === id);
+                if (item) {
+                    savedBookmarks.push(item);
+                    showToast('Saved to bookmarks!', 'success');
+                }
+            }
+            localStorage.setItem('edu_portal_bookmarks', JSON.stringify(savedBookmarks));
+            renderMaterialsGrid(studyMaterialsData);
+            updateBookmarkBadge();
+            renderBookmarksList();
+        }
+
+        function updateBookmarkBadge() {
+            const badge = document.getElementById('bookmark-badge');
+            if (savedBookmarks.length > 0) {
+                badge.innerText = savedBookmarks.length;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function toggleBookmarksDrawer() {
+            const drawer = document.getElementById('bookmarks-drawer');
+            if (drawer.classList.contains('translate-x-full')) {
+                drawer.classList.remove('translate-x-full');
+                renderBookmarksList();
+            } else {
+                drawer.classList.add('translate-x-full');
+            }
+        }
+
+        function renderBookmarksList() {
+            const list = document.getElementById('bookmarks-list');
+            if (savedBookmarks.length === 0) {
+                list.innerHTML = `
+                    <div class="text-center py-12 text-slate-400 text-xs">
+                        <i class="fa-solid fa-bookmark text-3xl mb-3 opacity-40"></i>
+                        <p>No saved materials yet.</p>
+                        <p class="text-[10px] mt-1">Click the bookmark icon on any material card to save it for quick access.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = savedBookmarks.map(item => `
+                <div class="p-4 bg-slate-50 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700 flex items-start justify-between gap-3 text-xs">
+                    <div>
+                        <span class="text-[10px] font-bold text-brand-600 uppercase">${item.code} • ${item.type}</span>
+                        <h4 class="font-bold text-slate-900 dark:text-white mt-0.5">${item.title}</h4>
+                        <button onclick="downloadResourceSimulated('${item.title}')" class="mt-2 text-brand-600 font-bold hover:underline flex items-center gap-1">
+                            <i class="fa-solid fa-download"></i> Download
+                        </button>
+                    </div>
+                    <button onclick="toggleBookmark('${item.id}')" class="text-slate-400 hover:text-red-500">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // EXAM TIMETABLE LOGIC
+        function renderTimetableTable() {
+            const filterVal = document.getElementById('timetable-dept-filter').value;
+            const container = document.getElementById('timetable-rows');
+
+            const filtered = filterVal === 'all' ? timetableData : timetableData.filter(t => t.dept === filterVal);
+
+            container.innerHTML = filtered.map(t => `
+                <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-700/30 transition-colors">
+                    <td class="px-6 py-4">
+                        <span class="font-bold text-brand-600 dark:text-brand-400 block">${t.code}</span>
+                        <span class="text-xs font-bold text-slate-900 dark:text-white">${t.title}</span>
+                    </td>
+                    <td class="px-6 py-4 text-xs font-semibold text-slate-600 dark:text-slate-300">${t.dept}</td>
+                    <td class="px-6 py-4">
+                        <div class="font-bold text-slate-900 dark:text-white">${t.date}</div>
+                        <div class="text-xs text-slate-400">${t.time}</div>
+                    </td>
+                    <td class="px-6 py-4 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                        <i class="fa-solid fa-location-dot text-red-500 mr-1"></i> ${t.hall}
+                    </td>
+                    <td class="px-6 py-4 text-center space-x-2">
+                        <button onclick="openSeatModal('${t.code}', '${t.hall}', '${t.seatRange}')" class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-bold transition-colors">
+                            <i class="fa-solid fa-chair text-brand-500"></i> Seat Plan
+                        </button>
+                        <button onclick="exportSingleICS('${t.title}', '${t.date}')" class="px-3 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold transition-colors">
+                            <i class="fa-solid fa-bell"></i> Remind
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openSeatModal(code, hall, seatRange) {
+            openModal(`
+                <div class="text-center space-y-4">
+                    <div class="w-14 h-14 rounded-2xl bg-brand-100 dark:bg-brand-950 text-brand-600 mx-auto flex items-center justify-center text-2xl">
+                        <i class="fa-solid fa-building-columns"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white">Seating Plan & Hall Information</h3>
+                    <div class="p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 text-xs space-y-2">
+                        <div class="flex justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
+                            <span class="text-slate-400">Course Code:</span>
+                            <span class="font-bold text-slate-800 dark:text-slate-200">${code}</span>
+                        </div>
+                        <div class="flex justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
+                            <span class="text-slate-400">Assigned Hall:</span>
+                            <span class="font-bold text-slate-800 dark:text-slate-200">${hall}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Seat Allocation Range:</span>
+                            <span class="font-bold text-brand-600">${seatRange}</span>
+                        </div>
+                    </div>
+                    <p class="text-[11px] text-slate-400">Please arrive at least 15 minutes before exam commencement with your student ID card.</p>
+                    <button onclick="closeModal()" class="w-full py-3 rounded-xl bg-brand-600 text-white font-bold text-xs">Acknowledge</button>
+                </div>
+            `);
+        }
+
+        function exportSingleICS(title, date) {
+            showToast(`Reminder created for ${title} on ${date}!`, 'success');
+        }
+
+        function exportFullCalendarICS() {
+            showToast('ICS Calendar file downloaded for all scheduled exams.', 'success');
+        }
+
+        // POMODORO FOCUS TIMER ENGINE
+        let pomoMinutes = 25;
+        let pomoSeconds = 0;
+        let pomoTimerInterval = null;
+        let pomoIsRunning = false;
+
+        function togglePomodoroTimer() {
+            const btn = document.getElementById('pomo-toggle-btn');
+            if (!pomoIsRunning) {
+                pomoIsRunning = true;
+                btn.innerHTML = '<i class="fa-solid fa-pause"></i> Pause Timer';
+                btn.classList.replace('bg-brand-600', 'bg-amber-600');
+
+                pomoTimerInterval = setInterval(() => {
+                    if (pomoSeconds === 0) {
+                        if (pomoMinutes === 0) {
+                            clearInterval(pomoTimerInterval);
+                            showToast('Pomodoro session completed! Time for a break.', 'success');
+                            resetPomodoroTimer();
+                            return;
+                        }
+                        pomoMinutes--;
+                        pomoSeconds = 59;
+                    } else {
+                        pomoSeconds--;
+                    }
+                    updatePomoDisplay();
+                }, 1000);
+            } else {
+                clearInterval(pomoTimerInterval);
+                pomoIsRunning = false;
+                btn.innerHTML = '<i class="fa-solid fa-play"></i> Resume Timer';
+                btn.classList.replace('bg-amber-600', 'bg-brand-600');
+            }
+        }
+
+        function resetPomodoroTimer() {
+            clearInterval(pomoTimerInterval);
+            pomoIsRunning = false;
+            pomoMinutes = 25;
+            pomoSeconds = 0;
+            updatePomoDisplay();
+            const btn = document.getElementById('pomo-toggle-btn');
+            btn.innerHTML = '<i class="fa-solid fa-play"></i> Start Timer';
+            btn.classList.replace('bg-amber-600', 'bg-brand-600');
+        }
+
+        function updatePomoDisplay() {
+            document.getElementById('pomo-display').innerText = 
+                `${String(pomoMinutes).padStart(2, '0')}:${String(pomoSeconds).padStart(2, '0')}`;
+        }
+
+        // CHECKLIST ENGINE
+        function renderChecklist() {
+            const container = document.getElementById('checklist-items');
+            const progressBadge = document.getElementById('checklist-progress');
+
+            const completedCount = checklistState.filter(c => c.done).length;
+            progressBadge.innerText = `${completedCount}/${checklistState.length} Done`;
+
+            container.innerHTML = checklistState.map(item => `
+                <label class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 cursor-pointer hover:bg-brand-50/50 transition-colors">
+                    <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleChecklistItem('${item.id}')" 
+                        class="w-4 h-4 rounded text-brand-600 focus:ring-brand-500 border-slate-300">
+                    <span class="text-xs font-semibold ${item.done ? 'line-through text-slate-400 dark:text-slate-500' : 'text-slate-800 dark:text-slate-200'}">${item.text}</span>
+                </label>
+            `).join('');
+        }
+
+        function toggleChecklistItem(id) {
+            const item = checklistState.find(c => c.id === id);
+            if (item) {
+                item.done = !item.done;
+                localStorage.setItem('edu_portal_checklist', JSON.stringify(checklistState));
+                renderChecklist();
+            }
+        }
+
+        // ACCORDION TOGGLE
+        function toggleAccordion(id) {
+            const el = document.getElementById(id);
+            const icon = document.getElementById(id + '-icon');
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                icon.classList.add('rotate-180');
+            } else {
+                el.classList.add('hidden');
+                icon.classList.remove('rotate-180');
+            }
+        }
+
+        // ANNOUNCEMENTS SECTION LOGIC
+        function renderAnnouncementsGrid(announcements) {
+            const container = document.getElementById('announcements-grid');
+            container.innerHTML = announcements.map(a => `
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-700/80 shadow-md flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="px-3 py-1 rounded-full text-[10px] font-extrabold ${a.category === 'Urgent' ? 'bg-red-100 text-red-600 dark:bg-red-950 dark:text-red-300' : 'bg-brand-100 text-brand-600 dark:bg-brand-950 dark:text-brand-300'}">${a.category}</span>
+                            <span class="text-xs text-slate-400 font-medium">${a.date}</span>
+                        </div>
+                        <h3 class="font-bold text-slate-900 dark:text-white text-base">${a.title}</h3>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 mt-2 leading-relaxed">${a.desc}</p>
+                    </div>
+                    <div class="mt-5 pt-4 border-t border-slate-100 dark:border-slate-700/60 flex justify-between items-center">
+                        <button onclick="openAnnouncementModal('${a.title}', '${a.desc}', '${a.date}')" class="text-xs text-brand-600 dark:text-brand-400 font-bold hover:underline inline-flex items-center gap-1">
+                            Full Notice <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterAnnouncements(category, btn) {
+            document.querySelectorAll('.ann-filter-btn').forEach(b => {
+                b.className = 'ann-filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-brand-50 transition-all';
+            });
+            btn.className = 'ann-filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-brand-600 text-white shadow-md transition-all';
+
+            const filtered = category === 'all' ? announcementsData : announcementsData.filter(a => a.category === category);
+            renderAnnouncementsGrid(filtered);
+        }
+
+        function openAnnouncementModal(title, desc, date) {
+            openModal(`
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
+                        <span class="text-xs font-bold text-brand-600">Official Campus Notice</span>
+                        <span class="text-xs text-slate-400">${date}</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white">${title}</h3>
+                    <div class="p-4 bg-slate-50 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                        ${desc}
+                    </div>
+                    <button onclick="closeModal()" class="w-full py-3 rounded-xl bg-brand-600 text-white font-bold text-xs">Close Circular</button>
+                </div>
+            `);
+        }
+
+        // SUPPORT TICKET SUBMISSION LOGIC
+        function handleSupportSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('support-name').value;
+            const email = document.getElementById('support-email').value;
+            const dept = document.getElementById('support-dept').value;
+            const topic = document.getElementById('support-topic').value;
+            const msg = document.getElementById('support-msg').value;
+
+            const newTicket = {
+                id: 'TICK-' + Math.floor(1000 + Math.random() * 9000),
+                topic: topic,
+                status: 'Pending Response',
+                date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+            };
+
+            submittedTickets.unshift(newTicket);
+            localStorage.setItem('edu_portal_tickets', JSON.stringify(submittedTickets));
+
+            showToast(`Ticket #${newTicket.id} created successfully!`, 'success');
+            document.getElementById('contact-form').reset();
+            renderTicketsHistory();
+        }
+
+        function renderTicketsHistory() {
+            const container = document.getElementById('tickets-history-list');
+            const countBadge = document.getElementById('ticket-count');
+
+            countBadge.innerText = `${submittedTickets.length} Tickets`;
+
+            if (submittedTickets.length === 0) {
+                container.innerHTML = `<div class="text-xs text-slate-400 text-center py-4">No past tickets submitted.</div>`;
+                return;
+            }
+
+            container.innerHTML = submittedTickets.map(t => `
+                <div class="p-3 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 text-xs flex items-center justify-between">
+                    <div>
+                        <span class="font-bold text-slate-800 dark:text-slate-200 block">${t.topic}</span>
+                        <span class="text-[10px] text-slate-400">${t.id} • ${t.date}</span>
+                    </div>
+                    <span class="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300">${t.status}</span>
+                </div>
+            `).join('');
+        }
+
+        // GPA CALCULATOR MODAL UTILITY
+        function openGPACalculator() {
+            openModal(`
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-brand-100 dark:bg-brand-950 text-brand-600 flex items-center justify-center text-lg font-bold">
+                            <i class="fa-solid fa-calculator"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Live GPA Calculator</h3>
+                            <p class="text-xs text-slate-400">Calculate grade point average</p>
+                        </div>
+                    </div>
+
+                    <div id="gpa-rows" class="space-y-3">
+                        <div class="grid grid-cols-12 gap-2">
+                            <input type="text" placeholder="Course Name" class="col-span-6 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs rounded-xl p-2.5 dark:text-white">
+                            <input type="number" placeholder="Credits" value="3" class="col-span-3 gpa-credit bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs rounded-xl p-2.5 dark:text-white">
+                            <select class="col-span-3 gpa-grade bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs rounded-xl p-2.5 dark:text-white">
+                                <option value="4.0">A (4.0)</option>
+                                <option value="3.5">B+ (3.5)</option>
+                                <option value="3.0">B (3.0)</option>
+                                <option value="2.5">C+ (2.5)</option>
+                                <option value="2.0">C (2.0)</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-12 gap-2">
+                            <input type="text" placeholder="Course Name" class="col-span-6 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs rounded-xl p-2.5 dark:text-white">
+                            <input type="number" placeholder="Credits" value="4" class="col-span-3 gpa-credit bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs rounded-xl p-2.5 dark:text-white">
+                            <select class="col-span-3 gpa-grade bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs rounded-xl p-2.5 dark:text-white">
+                                <option value="4.0">A (4.0)</option>
+                                <option value="3.5">B+ (3.5)</option>
+                                <option value="3.0">B (3.0)</option>
+                                <option value="2.5">C+ (2.5)</option>
+                                <option value="2.0">C (2.0)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-brand-50 dark:bg-slate-950 rounded-2xl border border-brand-200 dark:border-slate-800 flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Estimated Cumulative GPA:</span>
+                        <span id="gpa-result" class="text-2xl font-black text-brand-600">3.75</span>
+                    </div>
+
+                    <button onclick="calculateGPA()" class="w-full py-3 rounded-xl bg-brand-600 text-white font-bold text-xs shadow-md">Calculate GPA</button>
+                </div>
+            `);
+        }
+
+        function calculateGPA() {
+            const credits = document.querySelectorAll('.gpa-credit');
+            const grades = document.querySelectorAll('.gpa-grade');
+
+            let totalPoints = 0;
+            let totalCredits = 0;
+
+            credits.forEach((cInput, idx) => {
+                const c = parseFloat(cInput.value) || 0;
+                const g = parseFloat(grades[idx].value) || 0;
+                totalPoints += (c * g);
+                totalCredits += c;
+            });
+
+            const finalGPA = totalCredits > 0 ? (totalPoints / totalCredits).toFixed(2) : "0.00";
+            document.getElementById('gpa-result').innerText = finalGPA;
+        }
+
+        // SIMULATED DOWNLOAD HELPERS
+        function downloadResourceSimulated(filename) {
+            showToast(`Started download for ${filename}...`, 'info');
+        }
+
+        // MODAL ENGINE
+        function openModal(htmlContent) {
+            const backdrop = document.getElementById('modal-backdrop');
+            const card = document.getElementById('modal-card');
+            const body = document.getElementById('modal-body');
+
+            body.innerHTML = htmlContent;
+            backdrop.classList.remove('hidden');
+
+            setTimeout(() => {
+                card.classList.remove('scale-95', 'opacity-0');
+                card.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            const backdrop = document.getElementById('modal-backdrop');
+            const card = document.getElementById('modal-card');
+
+            card.classList.remove('scale-100', 'opacity-100');
+            card.classList.add('scale-95', 'opacity-0');
+
+            setTimeout(() => {
+                backdrop.classList.add('hidden');
+            }, 200);
+        }
+
+        // TOAST ENGINE
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+
+            toast.className = `pointer-events-auto px-4 py-3 rounded-2xl shadow-2xl text-xs font-bold text-white flex items-center gap-3 transition-all duration-300 transform translate-y-3 opacity-0 ${
+                type === 'success' ? 'bg-emerald-600' : 'bg-brand-600'
+            }`;
+
+            toast.innerHTML = `
+                <i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-circle-info'} text-base"></i>
+                <span>${message}</span>
+            `;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-3', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-3');
+                setTimeout(() => toast.remove(), 300);
+            }, 3200);
+        }
+    </script>
+</body>
+</html>
